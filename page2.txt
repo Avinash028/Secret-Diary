@@ -1,0 +1,127 @@
+<?php
+
+session_start();
+
+if($_SESSION['email'])
+  //echo("arg1");
+
+ //echo $_SESSION['email'];
+
+$diarycontent="";
+
+$link= mysqli_connect("localhost","root","","diary");
+
+$q="SELECT story FROM story WHERE email='".mysqli_real_escape_string($link,$_SESSION['email'])."'  LIMIT 1";
+
+$result=mysqli_query($link,$q);
+$row=mysqli_fetch_array($result);
+$diarycontent=$row['story'];
+
+
+?>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<style type="text/css">
+
+		html { 
+		  background: url(nature.jpg) no-repeat center center fixed; 
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover;
+		}
+
+		body {
+			background:none;
+		}
+
+		#diary {
+			margin-top: 30px;
+		}
+
+		
+
+		#b {
+			cursor: pointer;
+		}
+
+		#d2 {
+			margin-right: 10px;
+		}
+
+
+
+	</style>
+
+
+</head>
+<body>
+  <nav class="navbar navbar-toggleable-xl navbar-light bg-faded navbar-fixed-top">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand">SECRET DIARY</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      
+      <!--<li class="nav-item active">
+        <a class="nav-link" href="diary.php">Log Out <span class="sr-only">(current)</span></a>
+      </li> !-->
+
+       <div class="float-right" id="d2">
+      	<a href="changepassword.php" class="pull-xs-right"><button type="button" class="btn btn-success pull-xs-right" id="b">Change Password.</button></a>
+
+      </div>
+
+      <div class="pull-right" id="d1">
+      	<a href="diary.php" class="pull-xs-right"><button type="button" class="btn btn-success pull-xs-right" id="b">Log Out</button></a>
+
+      </div>
+
+     
+      
+    </ul>
+    
+  </div>
+</nav>
+
+
+    <div class="container-fluid">
+    	<textarea class="form-control" id="diary" rows="28">
+    		<?php 
+    			echo $diarycontent;
+    		?>
+
+    	</textarea>
+    </div>
+
+    <script type="text/javascript">
+    	
+
+    $('#diary').bind('input propertychange' , function() {
+
+          $.ajax({
+			  method: "POST",
+			  url: "updatedatabase.php",
+			  data: { content: $('#diary').val() }
+			})
+			  
+
+
+    });	
+    	
+
+
+    </script>
+</body>
+</html>
